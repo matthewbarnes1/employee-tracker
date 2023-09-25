@@ -90,11 +90,11 @@ function viewRoles() {
 function viewEmployees() {
   const query = `
     SELECT employee.id, employee.first_name, employee.last_name, role.title, 
-           department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
+           departments.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
     FROM employee
     LEFT JOIN role ON employee.role_id = role.id 
-    LEFT JOIN department ON role.department_id = department.id 
-    LEFT JOIN employee manager ON manager.id = employee.manager_id`;  
+    LEFT JOIN departments ON role.department_id = departments.id -- Corrected table name here
+    LEFT JOIN employee manager ON manager.id = employee.manager_id`;
 
   db.query(query, (err, rows) => {
     if (err) throw err;
@@ -102,6 +102,7 @@ function viewEmployees() {
     mainMenu();
   });
 }
+
 
 function addDepartment() {
   inquirer.prompt([{
