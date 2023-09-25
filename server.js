@@ -165,7 +165,64 @@ function addRole() {
   });
 }
 
-// ... continue with addRole, addEmployee, and updateEmployeeRole functions ...
+
+function addEmployee() {
+  // First, fetch all roles to allow the user to choose
+  db.query('SELECT id, title FROM role', (err, roles) => {
+    if (err) throw err;
+
+    inquirer.prompt([
+      {
+        type: 'input',
+        name: 'firstName',
+        message: 'Enter the first name of the employee:'
+      },
+      {
+        type: 'input',
+        name: 'lastName',
+        message: 'Enter the last name of the employee:'
+      },
+      {
+        type: 'list',
+        name: 'roleId',
+        message: 'Choose the role for this employee:',
+        choices: roles.map(role => ({
+          name: role.title,
+          value: role.id
+        }))
+      }
+    ])
+    .then(answer => {
+      // Fetch current employees to choose a manager (or opt for no manager)
+      db.query('SELECT id, CONCAT(first_name, " ", last_name) AS manager_name FROM employee', (err, managers) => {
+        if (err) throw err;
+
+        managers.push({ id: null, manager_name: "None" }); // Adding an option for no manager
+
+        inquirer.prompt({
+          type: 'list',
+          name: 'managerId',
+          message: 'Choose the manager for this employee:',
+          choices: managers.map(manager => ({
+            name: manager.manager_name,
+            value: manager.id
+          }))
+        })
+        .then(managerAnswer => {
+          const query = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)';
+          db.query(query, [answer.firstName, answer.lastName, answer.roleId, managerAnswer.managerId || null], (err, result) => {
+            if (err) throw err;
+            console.log('Added employee successfully!');
+            mainMenu();
+          });
+        });
+      });
+    });
+  });
+}
+
+
+// *updateEmployeeRole functions ...
 
 app.use((req, res) => {
   res.status(404).end();
