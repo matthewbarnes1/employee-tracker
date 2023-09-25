@@ -119,6 +119,52 @@ function addDepartment() {
   });
 }
 
+function addRole() {
+  // First, prompt for the role details
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'title',
+      message: 'Enter the title of the role:'
+    },
+    {
+      type: 'input',
+      name: 'salary',
+      message: 'Enter the salary for this role:',
+      validate: value => {
+        if (isNaN(value) || parseFloat(value) <= 0) {
+          return "Please enter a valid positive number for the salary.";
+        }
+        return true;
+      }
+    }
+  ])
+  .then(answer => {
+    // Fetch department details to allow user to choose
+    db.query('SELECT id, name FROM departments', (err, departments) => {
+      if (err) throw err;
+
+      inquirer.prompt({
+        type: 'list',
+        name: 'departmentId',
+        message: 'Choose the department for this role:',
+        choices: departments.map(dept => ({
+          name: dept.name,
+          value: dept.id
+        }))
+      })
+      .then(departmentAnswer => {
+        const query = 'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)';
+        db.query(query, [answer.title, parseFloat(answer.salary), departmentAnswer.departmentId], (err, result) => {
+          if (err) throw err;
+          console.log('Added role successfully!');
+          mainMenu();
+        });
+      });
+    });
+  });
+}
+
 // ... continue with addRole, addEmployee, and updateEmployeeRole functions ...
 
 app.use((req, res) => {
