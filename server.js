@@ -12,7 +12,7 @@ const app = express();
 
 const db = mysql.createConnection(
   {
-    host: '127.0.0.1',
+    host: 'localhost',
     user: db_user,
     password: db_pw,
     database: db_name,
@@ -89,12 +89,12 @@ function viewRoles() {
 
 function viewEmployees() {
   const query = `
-    SELECT employees.id, employees.first_name, employees.last_name, roles.title, 
-           departments.name AS department, roles.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
-    FROM employees 
-    LEFT JOIN roles ON employees.role_id = roles.id 
-    LEFT JOIN departments ON roles.department_id = departments.id 
-    LEFT JOIN employees manager ON manager.id = employees.manager_id`;
+    SELECT employee.id, employee.first_name, employee.last_name, role.title, 
+           department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
+    FROM employee
+    LEFT JOIN role ON employee.role_id = role.id 
+    LEFT JOIN department ON role.department_id = department.id 
+    LEFT JOIN employee manager ON manager.id = employee.manager_id`;  
 
   db.query(query, (err, rows) => {
     if (err) throw err;
@@ -104,14 +104,12 @@ function viewEmployees() {
 }
 
 function addDepartment() {
-  inquirer.prompt([
-    {
-      type: 'input',
-      name: 'departmentName',
-      message: 'Enter the name of the department:'
-    }
-  ]).then(answer => {
-    const query = 'INSERT INTO departments (name) VALUES (?)';
+  inquirer.prompt([{
+    type: 'input',
+    name: 'departmentName',
+    message: 'Enter the name of the department:'
+  }]).then(answer => {
+    const query = 'INSERT INTO departments (name) VALUES (?)';  // Fixed table name to "departments"
     db.query(query, answer.departmentName, (err, result) => {
       if (err) throw err;
       console.log('Added department successfully!');
@@ -130,3 +128,4 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   mainMenu();
 });
+
