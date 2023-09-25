@@ -76,9 +76,9 @@ function viewDepartments() {
 
 function viewRoles() {
   const query = `
-    SELECT roles.id, roles.title, roles.salary, departments.name AS department 
-    FROM roles 
-    JOIN departments ON roles.department_id = departments.id`;
+    SELECT role.id, role.title, role.salary, departments.name AS department 
+    FROM role 
+    JOIN departments ON role.department_id = departments.id`;
 
   db.query(query, (err, rows) => {
     if (err) throw err;
