@@ -222,7 +222,46 @@ function addEmployee() {
 }
 
 
-// *updateEmployeeRole functions ...
+function updateEmployeeRole() {
+  // First, fetch all employees to allow the user to select one
+  db.query('SELECT id, CONCAT(first_name, " ", last_name) AS full_name FROM employee', (err, employees) => {
+    if (err) throw err;
+
+    inquirer.prompt({
+      type: 'list',
+      name: 'employeeId',
+      message: 'Select an employee to update:',
+      choices: employees.map(employee => ({
+        name: employee.full_name,
+        value: employee.id
+      }))
+    })
+    .then(employeeAnswer => {
+      // Fetch all roles to allow the user to select the new role
+      db.query('SELECT id, title FROM role', (err, roles) => {
+        if (err) throw err;
+
+        inquirer.prompt({
+          type: 'list',
+          name: 'roleId',
+          message: 'Choose the new role for this employee:',
+          choices: roles.map(role => ({
+            name: role.title,
+            value: role.id
+          }))
+        })
+        .then(roleAnswer => {
+          const query = 'UPDATE employee SET role_id = ? WHERE id = ?';
+          db.query(query, [roleAnswer.roleId, employeeAnswer.employeeId], (err, result) => {
+            if (err) throw err;
+            console.log('Updated employee role successfully!');
+            mainMenu();
+          });
+        });
+      });
+    });
+  });
+}
 
 app.use((req, res) => {
   res.status(404).end();
