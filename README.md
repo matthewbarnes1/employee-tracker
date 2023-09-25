@@ -3,6 +3,7 @@
 - Simple database to store and retrieve your employee, roles, and departments
 
 ## Description
+Use the emplyoee tracker program to store your employees, roles, and departments all in one place! Quickly access your employee database using node, and connect to mysql!
 
 ### Dependencies
 - Node.js
