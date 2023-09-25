@@ -40,5 +40,5 @@ npm start
 
 ## License
 
-This project is licensed under the [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) License - see the LICENSE.md file for details
+This project is licensed with [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) - see the LICENSE.md file for details
 
