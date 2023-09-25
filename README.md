@@ -5,6 +5,11 @@
 ## Description
 Use the emplyoee tracker program to store your employees, roles, and departments all in one place! Quickly access your employee database using node, and connect to mysql!
 
+## Video Walkthrough
+[YouTube](https://youtu.be/RVY3TeZdlvw))
+
+
+
 ### Dependencies
 - Node.js
 - Inquirer.js
